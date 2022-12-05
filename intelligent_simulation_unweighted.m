@@ -17,9 +17,10 @@ battery_capacity = 500; % Amp hours
 % R_st = 10; % start-up time for reciever (ms)
 N_t = 1; % number of times transmitter is turned on
 N_r = 1; % number of times reciever is turned on
-E_elec = 50e-6; % nJ/bit to compute
-E_amp = 100e-9; % pJ/bit/m^2 to transmit
-message_size = 8; % in bits!
+E_compute = 1e-9; % pJ/bit to compute
+E_rec = 11e-9; % pJ/bit to recieve
+E_trans = 21e-9; % pJ/bit/m^2 to transmit
+message_size = 64; % in bits!
 wifi_bits = 14*8 + 20*8 + 8*8 + message_size; % ethernet + ip + udp + data
 days = 0;
 
@@ -60,7 +61,7 @@ while ~min(isinf(DD))
             % N_r * power to recive
             message_size = N_t * 8;
             new_wifi_bits = 14*8 + 20*8 + 8*8 + message_size; % ethernet + ip + udp + data
-            E_used = N_t*E_elec*wifi_bits + (E_elec*new_wifi_bits+E_amp*new_wifi_bits*724201/(3.281^2)) + N_r*E_elec*wifi_bits;
+            E_used = N_t*E_compute*wifi_bits + (E_compute*new_wifi_bits+E_trans*new_wifi_bits*874225/(3.281^2)) + E_compute*new_wifi_bits;
             power_left(i,1) = power_left(i,1) - E_used;
         end
     end
