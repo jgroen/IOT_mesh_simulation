@@ -21,6 +21,8 @@ E_compute = 1e-9; % pJ/bit to compute
 E_rec = 11e-9; % pJ/bit to recieve
 E_trans = 21e-9; % pJ/bit/m^2 to transmit
 message_size = 64; % in bits!
+E_write = 0;
+E_read = 0;
 wifi_bits = 14*8 + 20*8 + 8*8 + message_size; % ethernet + ip + udp + data
 days = 0;
 
@@ -58,8 +60,10 @@ while ~min(isinf(DD))
             Dist = distances(TR,i,sucID)/(3.281^2); % distance to next node i transmits too
             message_size = N_t * 8;
             new_wifi_bits = 14*8 + 20*8 + 8*8 + message_size; % ethernet + ip + udp + data
-            E_used = N_t*E_compute*wifi_bits + (E_compute*new_wifi_bits+E_trans*new_wifi_bits*Dist) + E_rec*new_wifi_bits;
-            power_left(i,1) = power_left(i,1) - E_used;
+            E_used = E_compute*wifi_bits + (E_compute*new_wifi_bits+E_trans*new_wifi_bits*Dist) + E_rec*(new_wifi_bits-64);
+            E_write = N_r * E_compute * 64;
+            E_read =  N_r * E_compute * 64;
+            power_left(i,1) = power_left(i,1) - E_used - E_write - E_read;
         end
     end
     dead = find(power_left<0);
@@ -77,4 +81,3 @@ while ~min(isinf(DD))
     plot(TR)
     title('Weighted')
 end
-
